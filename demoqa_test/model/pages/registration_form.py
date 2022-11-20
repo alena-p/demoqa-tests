@@ -40,9 +40,13 @@ def set_gender(value: Gender):
 
 
 def set_birthday(birth_day: str, birth_month: str, birth_year: str):
-    controls.datepicker.set_date(
+    controls.datepicker.set_date_by_typing(
         '#dateOfBirthInput', birth_day, birth_month, birth_year
     )
+
+    # controls.datepicker.set_date_by_picking(
+    #     '#dateOfBirthInput', birth_day, birth_month, birth_year
+    # )
 
 
 def upload_student_photo(value):

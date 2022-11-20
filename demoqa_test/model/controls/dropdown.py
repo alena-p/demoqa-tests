@@ -7,7 +7,3 @@ def select_by_option(element, value):
     browser.all('[id^=react-select][id*=-option-]').by(
         have.exact_text(value)
     ).first.click()
-
-
-def select_by_autocomplite():
-    ...

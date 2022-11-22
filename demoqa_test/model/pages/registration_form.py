@@ -4,7 +4,7 @@ from selene import have, be, command
 from selene.support.shared import browser
 
 from demoqa_test.model import controls
-from tests.test_data.students import Subject, Hobby, Gender
+from demoqa_test.model.test_data import Subject, Hobby, Gender
 
 state = browser.element('#state')
 

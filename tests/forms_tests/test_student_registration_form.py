@@ -1,4 +1,4 @@
-from tests.test_data.students import dante
+from demoqa_test.model.test_data import dante
 
 from demoqa_test.model import app
 

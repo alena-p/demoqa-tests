@@ -14,12 +14,22 @@ def add_screenshot(browser):
 
 def add_logs(browser):
     log = "".join(f'{text}\n' for text in browser.driver.get_log(log_type='browser'))
-    allure.attach(log, 'browser_logs', AttachmentType.TEXT, '.log')
+    allure.attach(
+        body=log,
+        name='browser_logs',
+        attachment_type=AttachmentType.TEXT,
+        extension='.log',
+    )
 
 
 def add_html(browser):
     html = browser.driver.page_source
-    allure.attach(html, 'page_source', AttachmentType.HTML, '.html')
+    allure.attach(
+        body=html,
+        name='page_source',
+        attachment_type=AttachmentType.HTML,
+        extension='.html',
+    )
 
 
 def add_video(browser):
@@ -32,5 +42,8 @@ def add_video(browser):
         + "' type='video/mp4'></video></body></html>"
     )
     allure.attach(
-        html, 'video_' + browser.driver.session_id, AttachmentType.HTML, '.html'
+        body=html,
+        name='video_' + browser.driver.session_id,
+        attachment_type=AttachmentType.HTML,
+        extension='.html',
     )

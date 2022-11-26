@@ -1,1 +1,0 @@
-{'level': 'SEVERE', 'message': 'https://cdn.ad.plus/player/adplus.js 401:150 Uncaught TypeError: e(...).setup is not a function', 'source': 'javascript', 'timestamp': 1669481473970}

@@ -1,56 +1,35 @@
-from selene.support.shared import browser
-from selene import have, be, command
+from demoqa_test.model.test_data.students import dante
 
-from tests.test_data.students import dante
-from utils.files import generate_absolute_path
-
-
-def given_opend_registration_form():
-    browser.open('/automation-practice-form')
+from demoqa_test.model import app
 
 
 def test_success_submit():
-    given_opend_registration_form()
+    app.registration_form.given_opened()
 
     # WHEN
 
-    browser.element('#firstName').type(dante.first_name)
-    browser.element('#lastName').type(dante.last_name)
-    browser.element('#userEmail').type(dante.email)
-    browser.element(
-        f'[id^=gender-radio][value={dante.gender.value}] + .custom-control-label'
-    ).click()
-    browser.element('#userNumber').type(dante.phone)
-    browser.element('#dateOfBirthInput').click()
-    browser.element('.react-datepicker__month-select').send_keys(dante.birth_month)
-    browser.element('.react-datepicker__year-select').send_keys(dante.birth_year)
-    browser.element(
-        f'.react-datepicker__month .react-datepicker__day--0{dante.birth_day}:not(.react-datepicker__day--outside-month)'
-    ).click()
-    for subject in dante.subjects:
-        browser.element('#subjectsInput').type(subject.value).press_enter()
-    for hobby in dante.hobbies:
-        browser.all('[for^=hobbies-checkbox]').by(
-            have.exact_text(hobby.value)
-        ).first.click()
-    browser.element('#uploadPicture').send_keys(generate_absolute_path(dante.picture))
-    browser.element('#currentAddress').type(dante.address)
-    browser.element('#state').perform(command.js.scroll_into_view)
-    browser.element('#state').click()
-    browser.all('#state [id^=react-select-3-option]').by(
-        have.exact_text(dante.state)
-    ).first.click()
-    browser.element('#city').click()
-    browser.all('#city [id^=react-select-4-option]').by(
-        have.exact_text(dante.city)
-    ).first.click()
+    app.registration_form.enter_first_name(dante.first_name)
+    app.registration_form.enter_last_name(dante.last_name)
+    app.registration_form.enter_email(dante.email)
+    app.registration_form.set_gender(dante.gender.value)
+    app.registration_form.enter_phone(dante.phone)
+    app.registration_form.set_birthday(
+        dante.birth_day, dante.birth_month, dante.birth_year
+    )
+    app.registration_form.set_subjects(dante.subjects)
+    app.registration_form.set_hobbies(dante.hobbies)
+    app.registration_form.upload_student_photo(dante.picture)
+    app.registration_form.enter_address(dante.address)
+    app.registration_form.scroll_to_bottom()
+    app.registration_form.set_state(dante.state)
+    app.registration_form.set_city(dante.city)
 
     # THEN
 
-    browser.element('#submit').perform(command.js.click)
-    browser.element('.modal-header #example-modal-sizes-title-lg').should(be.present)
-    browser.element('.modal-body').all('td:nth-child(even)').should(
-        have.texts(
+    app.registration_form.submit()
+    app.registration_form.check_header()
+    app.registration_form.check_data(
+        [
             f'{dante.first_name} {dante.last_name}',
             dante.email,
             dante.gender.value,
@@ -61,5 +40,5 @@ def test_success_submit():
             dante.picture.split('/')[-1],
             dante.address,
             f'{dante.state} {dante.city}',
-        )
+        ]
     )

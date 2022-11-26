@@ -7,6 +7,7 @@ class Subject(Enum):
     Accounting = 'Accounting'
     English = 'English'
     History = 'History'
+    Mathematics = 'Math'
 
 
 class Hobby(Enum):

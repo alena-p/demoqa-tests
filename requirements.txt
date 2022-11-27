@@ -1,4 +1,5 @@
 pytest~=7.2.0
-selene>=2.0.0b8
+selene>=2.0.0b14
 allure-pytest==2.12.0
-selenium==4.6.1
+selenium==4.4.3
+python-dotenv==0.21.0

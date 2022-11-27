@@ -6,6 +6,8 @@ from selenium.webdriver.chrome.options import Options
 
 from demoqa_test.utils import attachments
 
+DEFAULT_BROWSER_VERSION = '100'
+
 
 def pytest_addoption(parser):
     parser.addoption('--browser_version', default='100')
@@ -16,6 +18,9 @@ with allure.step('Configure browser'):
     @pytest.fixture(scope="function", autouse=True)
     def browser_config(request):
         browser_version = request.config.getoption('--browser_version')
+        browser_version = (
+            browser_version if browser_version != '' else DEFAULT_BROWSER_VERSION
+        )
         options = Options()
         selenoid_capabilities = {
             "browserName": "chrome",

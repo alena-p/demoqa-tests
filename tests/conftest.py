@@ -45,6 +45,7 @@ with allure.step('Configure browser'):
             options=options,
         )
 
+        '''Закоммитить строку, чтобы запустить локальный браузер'''
         browser.config.driver = driver
         browser.config.base_url = "https://demoqa.com"
         browser.config.window_width = 1920

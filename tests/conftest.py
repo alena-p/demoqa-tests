@@ -1,16 +1,23 @@
+import os
+
 import allure
 import pytest
 from selene.support.shared import browser
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-
 from demoqa_test.utils import attachments
+from dotenv import load_dotenv
 
 DEFAULT_BROWSER_VERSION = '100'
 
 
 def pytest_addoption(parser):
     parser.addoption('--browser_version', default='100')
+
+
+@pytest.fixture(scope="session", autouse=True)
+def load_env():
+    load_dotenv()
 
 
 with allure.step('Configure browser'):
@@ -30,8 +37,11 @@ with allure.step('Configure browser'):
 
         options.capabilities.update(selenoid_capabilities)
 
+        login = os.getenv("LOGIN")
+        password = os.getenv("PASSWORD")
+
         driver = webdriver.Remote(
-            command_executor="https://user1:1234@selenoid.autotests.cloud/wd/hub",
+            command_executor=f"https://{login}:{password}@selenoid.autotests.cloud/wd/hub",
             options=options,
         )
 

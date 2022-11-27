@@ -6,14 +6,20 @@ from selenium.webdriver.chrome.options import Options
 
 from demoqa_test.utils import attachments
 
+
+def pytest_addoption(parser):
+    parser.addoption('--browser_version', default='100')
+
+
 with allure.step('Configure browser'):
 
     @pytest.fixture(scope="function", autouse=True)
-    def browser_config():
+    def browser_config(request):
+        browser_version = request.config.getoption('--browser_version')
         options = Options()
         selenoid_capabilities = {
             "browserName": "chrome",
-            "browserVersion": "100.0",
+            "browserVersion": browser_version,
             "selenoid:options": {"enableVNC": True, "enableVideo": True},
         }
 

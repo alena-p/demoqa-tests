@@ -4,6 +4,7 @@ from selene import have, be, command
 from selene.support.shared import browser
 
 from demoqa_test.model import controls
+from demoqa_test.model.external import google
 from demoqa_test.model.test_data.students import Subject, Hobby, Gender
 
 state = browser.element('#state')
@@ -11,6 +12,8 @@ state = browser.element('#state')
 
 def given_opened():
     browser.open('/automation-practice-form')
+    google.remove_ads(amount=3, timeout=6)
+    google.remove_ads(amount=1, timeout=2)
 
 
 def enter_first_name(value: str):

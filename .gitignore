@@ -130,4 +130,4 @@ dmypy.json
 .pyre/
 
 allure-results/
-tests/allure-results/
+tests/allure-results/.pytest_cache

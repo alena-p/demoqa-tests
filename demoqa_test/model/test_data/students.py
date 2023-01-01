@@ -25,8 +25,8 @@ class Gender(Enum):
 @dataclass
 class Student:
     first_name: str
+    last_name: str
     gender: Gender
-    last_name: str = 'Hardy'
     email: str = 'jaxym@mailinator.com'
     phone: str = '3457856472'
     birth_day: str = '10'
@@ -38,6 +38,3 @@ class Student:
     address: str = 'Saint-Petersburg, Sadovaya str, 23'
     state: str = 'Haryana'
     city: str = 'Karnal'
-
-
-dante = Student(first_name='Dante', gender=Gender.Male)

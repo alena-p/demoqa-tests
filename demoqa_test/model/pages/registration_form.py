@@ -1,59 +1,20 @@
-from typing import Tuple, List
+from typing import Tuple
 
 from selene import have, be, command
 from selene.support.shared import browser
 
-from demoqa_test.model import controls
+from demoqa_test.model.controls.upload import Upload
+from demoqa_test.model.controls.datepicker import DatePicker
+from demoqa_test.model.controls.dropdown import Dropdown
+from demoqa_test.model.controls.input import Input
 from demoqa_test.model.external import google
-from demoqa_test.model.test_data.students import Subject, Hobby, Gender
-
-state = browser.element('#state')
-
-
-def given_opened():
-    browser.open('/automation-practice-form')
-    google.remove_ads(amount=3, timeout=6)
-    google.remove_ads(amount=1, timeout=2)
-
-
-def enter_first_name(value: str):
-    controls.input.fill_text('#firstName', value)
-
-
-def enter_last_name(value: str):
-    controls.input.fill_text('#lastName', value)
-
-
-def enter_email(value: str):
-    controls.input.fill_text('#userEmail', value)
-
-
-def enter_phone(value: str):
-    controls.input.fill_text('#userNumber', value)
-
-
-def enter_address(value: str):
-    controls.input.fill_text('#currentAddress', value)
+from demoqa_test.model.test_data.students import Subject, Hobby, Gender, Student
 
 
 def set_gender(value: Gender):
     browser.element(
         f'[id^=gender-radio][value={value}] + .custom-control-label'
     ).click()
-
-
-def set_birthday(birth_day: str, birth_month: str, birth_year: str):
-    controls.datepicker.set_date_by_typing(
-        '#dateOfBirthInput', birth_day, birth_month, birth_year
-    )
-
-    # controls.datepicker.set_date_by_picking(
-    #     '#dateOfBirthInput', birth_day, birth_month, birth_year
-    # )
-
-
-def upload_student_photo(value):
-    controls.upload.file('#uploadPicture', value)
 
 
 def set_subjects(subjects: Tuple[Subject]):
@@ -68,25 +29,69 @@ def set_hobbies(hobbies: Tuple[Hobby]):
         ).first.click()
 
 
-def set_state(value: str):
-    controls.dropdown.select_by_option(state, value)
+def given_opened():
+    browser.open('/automation-practice-form')
+    google.remove_ads(amount=3, timeout=6)
+    google.remove_ads(amount=1, timeout=2)
 
 
-def set_city(value: str):
-    controls.dropdown.select_by_option(browser.element('#city'), value)
+class RegistrationForm:
+    def __init__(self):
+        self.first_name = Input(browser.element('#firstName'))
+        self.last_name = Input(browser.element('#lastName'))
+        self.email = Input(browser.element('#userEmail'))
+        self.phone = Input(browser.element('#userNumber'))
+        self.address = Input(browser.element('#currentAddress'))
+        self.state = Dropdown(browser.element('#state'))
+        self.city = Dropdown(browser.element('#city'))
+        self.birthday = DatePicker(browser.element('#dateOfBirthInput'))
+        self.upload = Upload(browser.element('#uploadPicture'))
 
+    def fill_data(self, student: Student):
+        given_opened()
 
-def scroll_to_bottom():
-    state.perform(command.js.scroll_into_view)
+        self.first_name.fill_text(student.first_name)
+        self.last_name.fill_text(student.last_name)
+        self.email.fill_text(student.email)
+        set_gender(student.gender.value)
+        self.phone.fill_text(student.phone)
+        self.birthday.set_date_by_picking(
+            student.birth_day,
+            student.birth_month,
+            student.birth_year,
+        )
+        set_subjects(student.subjects)
+        set_hobbies(student.hobbies)
+        self.upload.file(student.picture)
+        self.address.fill_text(student.address)
+        self.state.element.perform(command.js.scroll_into_view)
+        self.state.select_by_option(student.state)
+        self.city.select_by_option(student.city)
+        return self
 
+    def submit(self):
+        browser.element('#submit').perform(command.js.click)
+        return self
 
-def submit():
-    browser.element('#submit').perform(command.js.click)
+    def should_have_registered(self, student: Student):
+        browser.element('.modal-header #example-modal-sizes-title-lg').should(
+            be.present
+        )
 
-
-def check_header():
-    browser.element('.modal-header #example-modal-sizes-title-lg').should(be.present)
-
-
-def check_data(data: List):
-    browser.element('.modal-body').all('td:nth-child(even)').should(have.texts(data))
+        browser.element('.modal-body').all('td:nth-child(even)').should(
+            have.texts(
+                [
+                    f'{student.first_name} {student.last_name}',
+                    student.email,
+                    student.gender.value,
+                    student.phone,
+                    f'{student.birth_day} {student.birth_month},{student.birth_year}',
+                    ', '.join([subject.value for subject in student.subjects]),
+                    ', '.join([hobby.value for hobby in student.hobbies]),
+                    student.picture.split('/')[-1],
+                    student.address,
+                    f'{student.state} {student.city}',
+                ]
+            )
+        )
+        return self

@@ -1,5 +1,9 @@
-from selene.support.shared import browser
+import selene
 
 
-def fill_text(element, value):
-    browser.element(element).type(value)
+class Input:
+    def __init__(self, element: selene.Element):
+        self.element = element
+
+    def fill_text(self, value):
+        self.element.type(value)

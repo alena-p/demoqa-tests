@@ -40,10 +40,10 @@ with allure.step('Configure browser'):
         login = os.getenv("LOGIN")
         password = os.getenv("PASSWORD")
 
-        driver = webdriver.Remote(
-            command_executor=f"https://{login}:{password}@selenoid.autotests.cloud/wd/hub",
-            options=options,
-        )
+        # driver = webdriver.Remote(
+        #     command_executor=f"https://{login}:{password}@selenoid.autotests.cloud/wd/hub",
+        #     options=options,
+        # )
 
         # browser.config.driver = driver # Закоммитить строку, чтобы запустить локальный браузер
         browser.config.base_url = "https://demoqa.com"

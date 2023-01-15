@@ -7,6 +7,9 @@ from demoqa_test.model.controls.upload import Upload
 from demoqa_test.model.controls.datepicker import DatePicker
 from demoqa_test.model.controls.dropdown import Dropdown
 from demoqa_test.model.controls.input import Input
+from demoqa_test.model.controls.checkbox import Checkbox
+from demoqa_test.model.controls.radio_button import RadioButton
+from demoqa_test.model.controls.tags import Tags
 from demoqa_test.model.external import google
 from demoqa_test.model.test_data.students import Subject, Hobby, Gender, Student
 
@@ -79,18 +82,16 @@ class RegistrationForm:
 
     @staticmethod
     def set_gender(value: Gender):
-        browser.element(
-            f'[id^=gender-radio][value={value}] + .custom-control-label'
-        ).click()
+        RadioButton(
+            browser.element(
+                f'[id^=gender-radio][value={value}] + .custom-control-label'
+            )
+        ).set()
 
     @staticmethod
     def set_subjects(subjects: Tuple[Subject]):
-        for subject in subjects:
-            browser.element('#subjectsInput').type(subject.value).press_enter()
+        Tags(browser.element('#subjectsInput')).add_by_autocomplete(subjects)
 
     @staticmethod
     def set_hobbies(hobbies: Tuple[Hobby]):
-        for hobby in hobbies:
-            browser.all('[for^=hobbies-checkbox]').by(
-                have.exact_text(hobby.value)
-            ).first.click()
+        Checkbox(browser.all('[for^=hobbies-checkbox]')).set(hobbies)

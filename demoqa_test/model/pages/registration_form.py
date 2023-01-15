@@ -11,30 +11,6 @@ from demoqa_test.model.external import google
 from demoqa_test.model.test_data.students import Subject, Hobby, Gender, Student
 
 
-def set_gender(value: Gender):
-    browser.element(
-        f'[id^=gender-radio][value={value}] + .custom-control-label'
-    ).click()
-
-
-def set_subjects(subjects: Tuple[Subject]):
-    for subject in subjects:
-        browser.element('#subjectsInput').type(subject.value).press_enter()
-
-
-def set_hobbies(hobbies: Tuple[Hobby]):
-    for hobby in hobbies:
-        browser.all('[for^=hobbies-checkbox]').by(
-            have.exact_text(hobby.value)
-        ).first.click()
-
-
-def given_opened():
-    browser.open('/automation-practice-form')
-    google.remove_ads(amount=3, timeout=6)
-    google.remove_ads(amount=1, timeout=2)
-
-
 class RegistrationForm:
     def __init__(self):
         self.first_name = Input(browser.element('#firstName'))
@@ -48,20 +24,19 @@ class RegistrationForm:
         self.upload = Upload(browser.element('#uploadPicture'))
 
     def fill_data(self, student: Student):
-        given_opened()
 
         self.first_name.fill_text(student.first_name)
         self.last_name.fill_text(student.last_name)
         self.email.fill_text(student.email)
-        set_gender(student.gender.value)
+        self.set_gender(student.gender.value)
         self.phone.fill_text(student.phone)
         self.birthday.set_date_by_picking(
             student.birth_day,
             student.birth_month,
             student.birth_year,
         )
-        set_subjects(student.subjects)
-        set_hobbies(student.hobbies)
+        self.set_subjects(student.subjects)
+        self.set_hobbies(student.hobbies)
         self.upload.file(student.picture)
         self.address.fill_text(student.address)
         self.state.element.perform(command.js.scroll_into_view)
@@ -95,3 +70,27 @@ class RegistrationForm:
             )
         )
         return self
+
+    @staticmethod
+    def given_opened():
+        browser.open('/automation-practice-form')
+        google.remove_ads(amount=3, timeout=6)
+        google.remove_ads(amount=1, timeout=2)
+
+    @staticmethod
+    def set_gender(value: Gender):
+        browser.element(
+            f'[id^=gender-radio][value={value}] + .custom-control-label'
+        ).click()
+
+    @staticmethod
+    def set_subjects(subjects: Tuple[Subject]):
+        for subject in subjects:
+            browser.element('#subjectsInput').type(subject.value).press_enter()
+
+    @staticmethod
+    def set_hobbies(hobbies: Tuple[Hobby]):
+        for hobby in hobbies:
+            browser.all('[for^=hobbies-checkbox]').by(
+                have.exact_text(hobby.value)
+            ).first.click()

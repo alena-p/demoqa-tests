@@ -13,6 +13,9 @@ from demoqa_test.model import app
 def test_success_submit():
 
     # GIVEN
+    with allure.step('Application is ready'):
+        app.registration_form.given_opened()
+
     with allure.step('Define student'):
         dante = Student(first_name='Dante', last_name='Hardy', gender=Gender.Male)
 
